@@ -6,26 +6,38 @@ import { AppComponent } from './app.component';
 
 import { APP_BASE_HREF } from '@angular/common';
 import { StatsComponent } from './stats/stats.component';
-import { KeyboardConfigComponent } from './keyboard-config/keyboard-config.component';
 import { StoreModule } from '@ngrx/store';
 import { reducerMap } from './state';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfigFormComponent } from './keyboard/config-form/config-form.component';
+import { KeyboardComponent } from './keyboard/keyboard.component';
+import { ConfigListComponent } from './keyboard/config-list/config-list.component';
+import { RunningConfigComponent } from './keyboard/running-config/running-config.component';
+import { MatSelectModule, MatTableModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     StatsComponent,
-    KeyboardConfigComponent
+    ConfigFormComponent,
+    KeyboardComponent,
+    ConfigListComponent,
+    RunningConfigComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    CoreModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    MatTableModule,
+    MatSelectModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KeyboardConfigComponent } from './keyboard-config.component';
+import { ConfigFormComponent } from './config-form.component';
 
-describe('KeyboardConfigComponent', () => {
-  let component: KeyboardConfigComponent;
-  let fixture: ComponentFixture<KeyboardConfigComponent>;
+describe('ConfigFormComponent', () => {
+  let component: ConfigFormComponent;
+  let fixture: ComponentFixture<ConfigFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ KeyboardConfigComponent ]
+      declarations: [ ConfigFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(KeyboardConfigComponent);
+    fixture = TestBed.createComponent(ConfigFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

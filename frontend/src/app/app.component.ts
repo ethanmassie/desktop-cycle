@@ -9,6 +9,9 @@ declare global {
     backend: {
       getSpeed: () => Promise<number>;
       getCadence: () => Promise<number>;
+      keyUp: (key: string) => Promise<void>;
+      keyDown: (key: string) => Promise<void>;
+      tapKey: (key: string) => Promise<void>;
     };
   }
 }

@@ -27,8 +27,12 @@ func getCadence() float64 {
 	return cadence
 }
 
-func toggleKey(keyName string, action string) {
-	robotgo.KeyToggle(keyName, action)
+func keyUp(keyName string) {
+	robotgo.KeyToggle(keyName, "up")
+}
+
+func keyDown(keyName string) {
+	robotgo.KeyToggle(keyName, "down")
 }
 
 func tapKey(keyName string) {
@@ -60,7 +64,8 @@ func main() {
 	app.Bind(getSpeed)
 	app.Bind(getCadence)
 	app.Bind(tapKey)
-	app.Bind(toggleKey)
+	app.Bind(keyDown)
+	app.Bind(keyUp)
 	err = app.Run()
 	if err != nil {
 		panic(err)

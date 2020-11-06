@@ -1,0 +1,60 @@
+<h1>Edit Keyboard Configuration</h1>
+
+<mat-form-field>
+  <mat-label>Name</mat-label>
+  <input matInput [(ngModel)]="name">
+</mat-form-field>
+
+<button mat-raised-button (click)="submit()">Save</button>
+
+<h2>Keys</h2>
+<mat-table #keysTable id="keysTable" [dataSource]="dataSource">
+  <ng-container matColumnDef="keyName">
+    <mat-header-cell *matHeaderCellDef>Key Name</mat-header-cell>
+    <mat-cell *matCellDef="let key">
+      <mat-form-field>
+        <input matInput [(ngModel)]="key.key">
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="minSpeed">
+    <mat-header-cell *matHeaderCellDef>Min Speed</mat-header-cell>
+    <mat-cell *matCellDef="let key">
+      <mat-form-field>
+        <input matInput type="number" [(ngModel)]="key.minSpeed">
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="maxSpeed">
+    <mat-header-cell *matHeaderCellDef>Max Speed</mat-header-cell>
+    <mat-cell *matCellDef="let key">
+      <mat-form-field>
+        <input matInput type="number" [(ngModel)]="key.maxSpeed">
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="action">
+    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+    <mat-cell *matCellDef="let key">
+      <mat-form-field>
+        <mat-select [(value)]="key.action">
+          <mat-option value="HOLD">Hold</mat-option>
+          <mat-option value="TOGGLE">Toggle</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <mat-header-cell *matHeaderCellDef><button mat-raised-button (click)="addKey()">Add Key</button></mat-header-cell>
+    <mat-cell *matCellDef="let key; let i = index">
+      <button mat-flat-button (click)="deleteRow(i)">Delete</button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></mat-row>
+</mat-table>
