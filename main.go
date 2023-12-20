@@ -1,73 +1,36 @@
 package main
 
 import (
-	"desktop-cycle/internal/util"
-	"github.com/go-vgo/robotgo"
-	"github.com/leaanthony/mewn"
-	"github.com/wailsapp/wails"
+	"embed"
+
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
-var deskCycleSerial *util.DeskCycleSerial
-
-func getSpeed() float64 {
-	speed, err := deskCycleSerial.CurrentSpeed()
-	if err != nil {
-		panic(err)
-	}
-
-	return speed
-}
-
-func getCadence() float64 {
-	cadence, err := deskCycleSerial.CurrentCadence()
-	if err != nil {
-		panic(err)
-	}
-
-	return cadence
-}
-
-func keyUp(keyName string) {
-	robotgo.KeyToggle(keyName, "up")
-}
-
-func keyDown(keyName string) {
-	robotgo.KeyToggle(keyName, "down")
-}
-
-func tapKey(keyName string) {
-	robotgo.KeyTap(keyName)
-}
+//go:embed all:frontend/dist
+var assets embed.FS
 
 func main() {
-	html := mewn.String("./frontend/dist/my-app/index.html")
-	js := mewn.String("./frontend/dist/my-app/main.js")
-	css := mewn.String("./frontend/dist/my-app/styles.css")
+	// Create an instance of the app structure
+	app := NewApp()
 
-	app := wails.CreateApp(&wails.AppConfig{
+	// Create application with options
+	err := wails.Run(&options.App{
+		Title:  "desktop-cycle",
 		Width:  1024,
 		Height: 768,
-		Title:  "Desktop Cycle",
-		HTML: 	html,
-		JS:     js,
-		CSS:    css,
-		Resizable: true,
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
+		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:        app.startup,
+		Bind: []interface{}{
+			app,
+		},
 	})
 
-	// initialize desk cycle serial
-	var err error
-	deskCycleSerial, err = util.NewDeskCycleSerial()
 	if err != nil {
-		panic(err)
-	}
-
-	app.Bind(getSpeed)
-	app.Bind(getCadence)
-	app.Bind(tapKey)
-	app.Bind(keyDown)
-	app.Bind(keyUp)
-	err = app.Run()
-	if err != nil {
-		panic(err)
+		println("Error:", err.Error())
 	}
 }
