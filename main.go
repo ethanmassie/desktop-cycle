@@ -2,11 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"desktop-cycle/internal/util"
+	"desktop-cycle/internal/db"
 	"embed"
-	"os"
-	"path/filepath"
 
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -15,53 +14,40 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-func createLocalDirectory() error {
-	// TODO: add cross platform paths
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
+//go:embed all:migrations
+var migrations embed.FS
 
-	localPath := filepath.Join(home, ".local", "share", "desktop-cycle")
-	err = os.MkdirAll(localPath, os.ModePerm)
-	if err != nil {
-		return err
-	}
-
-	db, err := os.Create(filepath.Join(localPath, "db.sqlite3"))
-	if err != nil {
-		return err
-	}
-
-	return db.Close()
-}
-
-func setup() (db *sql.DB, err error) {
-	err = createLocalDirectory()
+func setup() (con *sql.DB, err error) {
+	err = db.CreateLocalDirectory()
 	if err != nil {
 		return nil, err
 	}
 
-	db, err = util.ConnectToDB()
+	con, err = db.ConnectToDB()
 	if err != nil {
 		return nil, err
 	}
 
-	err = util.RunMigrations(db)
+	fs, err := iofs.New(migrations, "migrations")
 	if err != nil {
 		return nil, err
 	}
 
-	return db, nil
+	err = db.RunMigrations(con, fs)
+	if err != nil {
+		return nil, err
+	}
+
+	return con, nil
 }
 
 func main() {
-	db, err := setup()
+	con, err := setup()
 	if err != nil {
 		panic(err)
 	}
 
-	defer db.Close()
+	defer con.Close()
 
 	// Create an instance of the app structure
 	app := NewApp()
