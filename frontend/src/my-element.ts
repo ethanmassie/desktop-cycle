@@ -1,6 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Connect } from "../wailsjs/go/main/App";
+import { Connect } from "../wailsjs/go/main/Cycle";
 import * as Runtime from "../wailsjs/runtime/runtime.js";
 import "./style.css";
 
@@ -69,7 +69,7 @@ export class MyElement extends LitElement {
     }
   `;
 
-  @property()
+  @property({ type: Number })
   speed = 0;
 
   connect() {
@@ -98,24 +98,5 @@ export class MyElement extends LitElement {
 declare global {
   interface HTMLElementTagNameMap {
     "my-element": MyElement;
-  }
-  interface Window {
-    runtime: {
-      EventsOn: (
-        eventName: string,
-        callback: (optionalData?: any) => void
-      ) => () => void;
-      EventsOff: (eventName: string, ...additionalEventNames: string[]) => void;
-      EventsOnce: (
-        eventName: string,
-        callback: (optionalData?: any) => void
-      ) => () => void;
-      EventsOnMultiple: (
-        eventName: string,
-        callback: (optionalData?: any) => void,
-        counter: number
-      ) => () => void;
-      EventsEmit: (eventName: string, ...optionalData: any) => () => void;
-    };
   }
 }

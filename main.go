@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"desktop-cycle/internal/db"
 	"embed"
@@ -50,21 +51,25 @@ func main() {
 
 	defer con.Close()
 
-	// Create an instance of the app structure
 	app := NewApp()
+	cycle := NewCycle()
 
 	// Create application with options
 	err = wails.Run(&options.App{
-		Title:  "desktop-cycle",
+		Title:  "Desktop Cycle",
 		Width:  1024,
 		Height: 768,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
+		OnStartup: func(ctx context.Context) {
+			app.startup(ctx)
+			cycle.startup(ctx)
+		},
 		Bind: []interface{}{
 			app,
+			cycle,
 		},
 	})
 
