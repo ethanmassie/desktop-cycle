@@ -27,6 +27,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+//lint:ignore U1000 called by framework
 func (a *App) beforeClose(ctx context.Context) (prevent bool) {
 	if a.deskCycle != nil {
 		a.stopSpeedPoll <- struct{}{}
@@ -68,7 +69,6 @@ func (a *App) startSpeedPoll() {
 				}
 
 				runtime.EventsEmit(a.ctx, "speed", speed)
-				break
 			case <-pollStop:
 				poll.Stop()
 				return
