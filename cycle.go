@@ -67,7 +67,7 @@ func (c *Cycle) startSpeedPoll() {
 			case <-poll.C:
 				speed, err := c.cycleDriver.GetSpeed()
 				if err != nil {
-					fmt.Printf("Error getting speed: %s", err)
+					runtime.LogError(c.ctx, fmt.Sprintf("Error getting speed: %s", err))
 				}
 
 				runtime.EventsEmit(c.ctx, "speed", speed)
