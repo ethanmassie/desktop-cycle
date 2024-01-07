@@ -2,10 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"desktop-cycle/internal/util"
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -16,21 +16,15 @@ import (
 )
 
 const DB_FILE = "db.sqlite3"
-const LINUX_PATH = "/.local/share/desktop-cycle/"
 
-func GetDBPath() string {
-	// TODO: add cross platform paths
-	home, _ := os.UserHomeDir()
-	if runtime.GOOS == "linux" {
-		return home + LINUX_PATH
+// create the sqlite file if it doesn't exist
+func CreateDBFile() error {
+	localPath, err := util.GetLocalPath()
+	if err != nil {
+		return err
 	}
 
-	panic("Unsupported OS " + runtime.GOOS)
-}
-
-func CreateLocalDirectory() error {
-	localPath := GetDBPath()
-	err := os.MkdirAll(localPath, os.ModePerm)
+	err = os.MkdirAll(localPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -43,8 +37,12 @@ func CreateLocalDirectory() error {
 	return dbFile.Close()
 }
 
+// create connection to the sqlite db
 func ConnectToDB() (*sql.DB, error) {
-	dbPath := GetDBPath()
+	dbPath, err := util.GetLocalPath()
+	if err != nil {
+		return nil, err
+	}
 	db, err := sql.Open("sqlite3", filepath.Join(dbPath, DB_FILE))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open sqlite DB at "+dbPath)
@@ -53,6 +51,7 @@ func ConnectToDB() (*sql.DB, error) {
 	return db, nil
 }
 
+// run the given migrations on the given sqlite3 db
 func RunMigrations(db *sql.DB, migrations source.Driver) error {
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {

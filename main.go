@@ -17,8 +17,9 @@ var assets embed.FS
 //go:embed all:migrations
 var migrations embed.FS
 
+// create db and run migrations
 func setup() (con *sql.DB, err error) {
-	err = db.CreateLocalDirectory()
+	err = db.CreateDBFile()
 	if err != nil {
 		return nil, err
 	}
